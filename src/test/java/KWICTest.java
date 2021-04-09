@@ -1,80 +1,69 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class KWICTest {
 
     @Test
-    public void orderedSetCannotBeInstantiatedWithANullSet() {
-        Assertions.assertThrows(NullPointerException.class, () ->
-                new OrderedSet<>(null)
-        );
-    }
-
-    @Test
     public void lineShift() {
-        Line input = new Line("ABC", "DEF", "GHI");
-        Line output = input.shift();
+        String input = "ABC DEF GHI";
+        List<String> output = KWIC.shifts(input);
 
         // Check shift
-        Line expectedOutput = new Line("DEF", "GHI", "ABC");
+        List<String> expectedOutput = new ArrayList<>();
+        expectedOutput.add("ABC DEF GHI");
+        expectedOutput.add("DEF GHI ABC");
+        expectedOutput.add("GHI ABC DEF");
         Assertions.assertEquals(expectedOutput, output);
 
         // Check that input was not mutated
-        Line expectedInput = new Line("ABC", "DEF", "GHI");
+        String expectedInput = "ABC DEF GHI";
         Assertions.assertEquals(expectedInput, input);
     }
 
     @Test
     public void orderedShifts() {
-        KWIC input = new KWIC(
-                new Line("A", "AB", "ABC"),
-                new Line("A", "AB", "ABC"),
-                new Line("X", "XYZ", "XZ")
-        );
-        String output = input.orderedShiftsKWIC().toString();
+        String input = "" +
+                "A AB ABC\n" +
+                "XYZ XZ X";
+        String output = KWIC.orderedShiftsKWIC(input);
 
         String expectedOutput = "" +
-                "[A, AB, ABC]\n" +
-                "[AB, ABC, A]\n" +
-                "[ABC, A, AB]\n" +
-                "[X, XYZ, XZ]\n" +
-                "[XYZ, XZ, X]\n" +
-                "[XZ, X, XYZ]";
+                "A AB ABC\n" +
+                "AB ABC A\n" +
+                "ABC A AB\n" +
+                "X XYZ XZ\n" +
+                "XYZ XZ X\n" +
+                "XZ X XYZ";
         Assertions.assertEquals(expectedOutput, output);
 
         // Check that input was not mutated
-        KWIC expectedInput = new KWIC(
-                new Line("A", "AB", "ABC"),
-                new Line("A", "AB", "ABC"),
-                new Line("X", "XYZ", "XZ")
-        );
+        String expectedInput = "" +
+                "A AB ABC\n" +
+                "XYZ XZ X";
         Assertions.assertEquals(expectedInput, input);
     }
 
     @Test
     public void orderedShiftsKWICIsIdempotent() {
-        KWIC input = new KWIC(
-                new Line("A", "AB", "ABC"),
-                new Line("A", "AB", "ABC"),
-                new Line("X", "XYZ", "XZ")
-        ).orderedShiftsKWIC();
-        String output = input.orderedShiftsKWIC().toString();
+        String input = "" +
+                "A AB ABC\n" +
+                "XYZ XZ X";
+        String output = KWIC.orderedShiftsKWIC(input);
 
         String expectedOutput = "" +
-                "[A, AB, ABC]\n" +
-                "[AB, ABC, A]\n" +
-                "[ABC, A, AB]\n" +
-                "[X, XYZ, XZ]\n" +
-                "[XYZ, XZ, X]\n" +
-                "[XZ, X, XYZ]";
+                "A AB ABC\n" +
+                "AB ABC A\n" +
+                "ABC A AB\n" +
+                "X XYZ XZ\n" +
+                "XYZ XZ X\n" +
+                "XZ X XYZ";
         Assertions.assertEquals(expectedOutput, output);
-
-        // Check that input was not mutated
-        KWIC expectedInput = new KWIC(
-                new Line("A", "AB", "ABC"),
-                new Line("A", "AB", "ABC"),
-                new Line("X", "XYZ", "XZ")
-        ).orderedShiftsKWIC();
-        Assertions.assertEquals(expectedInput, input);
+        output = KWIC.orderedShiftsKWIC(input);
+        Assertions.assertEquals(expectedOutput, output);
+        output = KWIC.orderedShiftsKWIC(input);
+        Assertions.assertEquals(expectedOutput, output);
     }
 }
