@@ -9,14 +9,6 @@ class KWIC extends OrderedSet<Line> {
         super(new LinkedHashSet<>(Arrays.asList(lines)));
     }
 
-    String orderedShifts() {
-        return super.set.stream()
-                .flatMap(line -> line.shifts().stream())
-                .map(Line::toString)
-                .sorted()
-                .collect(Collectors.joining("\n"));
-    }
-
     KWIC orderedShiftsKWIC() {
         List<Line> lines = super.set.stream()
                 .flatMap(line -> line.shifts().stream())

@@ -31,7 +31,7 @@ public class KWICTest {
                 new Line("A", "AB", "ABC"),
                 new Line("X", "XYZ", "XZ")
         );
-        String output = input.orderedShifts();
+        String output = input.orderedShiftsKWIC().toString();
 
         String expectedOutput = "" +
                 "[A, AB, ABC]\n" +
